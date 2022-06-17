@@ -14,7 +14,7 @@ def Map_Mark(X):
                         popup="<stong>starbuck</stong>",
                         tooltip=tooltip)
                 marker.add_to(m)
-        #m.save('p22.html')
+        m.save('p22.html')
 
 file = open('C:/Users/User/hello/Algorithm/starbucks_2018_11_06.csv',encoding="utf8")
 
