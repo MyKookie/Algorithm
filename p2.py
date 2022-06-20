@@ -8,20 +8,6 @@ from itertools import permutations
 from ortools.constraint_solver import routing_enums_pb2
 from ortools.constraint_solver import pywrapcp
 
-def Map_Mark(X):
-        m = folium.Map(location=[31.2304, 121.4737], zoom_start=12)
-        for i in range(len(X)):
-
-
-                tooltip = "Click Here For More Info"
-                marker = folium.Marker(
-                        location=X[i],
-                        icon=folium.Icon(icon="cloud"),
-                        popup="<stong>starbuck</stong>",
-                        tooltip=tooltip)
-                marker.add_to(m)
-
-
 # def get_lowest_sum(X):
 
 #     list_of_distances = [geodesic(a, b).km for a, b in permutations(X, 2)]
@@ -51,8 +37,10 @@ def Map_Mark(X):
 
 def create_data_model(X):
     """Stores the data for the problem."""
+    list_of_distances = np.array([int(geodesic(a, b).km) for a, b in product(X, repeat = 2)])
+    distance_matrix = list_of_distances.reshape(int(list_of_distances.size**0.5), int(list_of_distances.size**0.5))
     data = {}
-    data['distance_matrix'] = X  # yapf: disable
+    data['distance_matrix'] = distance_matrix # yapf: disable
     data['num_vehicles'] = 1
     data['depot'] = 0
     # print (data)
@@ -95,45 +83,11 @@ def get_route(solution, routing, manager):
     routes.append(route)
     return route
 
-# def main(X):
-#     """Entry point of the program."""
-#     # Instantiate the data problem.
-#     data = create_data_model(X)
-
-#     # Create the routing index manager.
-#     manager = pywrapcp.RoutingIndexManager(len(data['distance_matrix']),
-#                                            data['num_vehicles'], data['depot'])
-
-#     # Create Routing Model.
-#     routing = pywrapcp.RoutingModel(manager)
-
-
-#     transit_callback_index = routing.RegisterTransitCallback(distance_callback)
-
-#     # Define cost of each arc.
-#     routing.SetArcCostEvaluatorOfAllVehicles(transit_callback_index)
-
-#     # Setting first solution heuristic.
-#     search_parameters = pywrapcp.DefaultRoutingSearchParameters()
-#     search_parameters.first_solution_strategy = (
-#         routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC)
-
-#     # Solve the problem.
-#     solution = routing.SolveWithParameters(search_parameters)
-
-#     # Print solution on console.
-#     if solution:
-#         print_solution(manager, routing, solution)
-#         folium.PolyLine(points, color='red').add_to(m)
-
 
     
 file = open('C:/Users/User/hello/Algorithm/starbucks_2018_11_06.csv',encoding="utf8")
 
 csvreader = csv.reader(file)
-# header = []
-# header = next(csvreader)
-# # print(header)
 store_Cn=[]
 store_My=[]
 store_Jp=[]
@@ -173,87 +127,97 @@ for row in csvreader:
 # print(store_Mx)
 file.close()
 #select 6 random store
-# s_CN = random.choices(store_Cn, k=6)
-# s_MY = random.choices(store_My, k=6)
-# s_JP = random.choices(store_Jp, k=6)
-# s_KR = random.choices(store_Kr, k=6)
-# s_MX = random.choices(store_Mx, k=6)
-# X = np.array([
-#     ["CN,0"],
-#     ["MY,0"],
-#     ["JP,0"],
-#     ["KR,0"],
-#     ["MX,0"],
-# ])
+s_CN = random.choices(store_Cn, k=6)
+s_MY = random.choices(store_My, k=6)
+s_JP = random.choices(store_Jp, k=6)
+s_KR = random.choices(store_Kr, k=6)
+s_MX = random.choices(store_Mx, k=6)
+X = np.array([
+    ["CN,0"],
+    ["MY,0"],
+    ["JP,0"],
+    ["KR,0"],
+    ["MX,0"],
+])
 
-s_CN = [['31.260673', '121.499428'], ['31.229257', '121.524293'], ['30.243706', '120.164931'], ['38.91687', '121.635837'], ['39.049373', '121.779125'], ['39.117714', '117.218177']]
-s_MY = [['3.814387', '103.327294'], ['3.117951', '101.635792'], ['1.472285', '103.782901'], ['3.202535', '101.733844'], ['3.153336', '101.707138'], ['4.331214', '113.985114']]
-s_JP = [['35.881087', '139.827807'], ['33.32841', '130.311539'], ['43.068145', '141.349646'], ['34.661902', '135.081374'], ['35.007649', '135.759842'], ['34.749957', '137.840909']]
-s_KR = [['37.39228', '126.95652'], ['35.835315', '128.579907'], ['35.22447', '128.68395'], ['37.48448', '126.8945'], ['35.15968', '129.15951'], ['37.517172', '126.903269']]
-s_MX = [['20.679404', '-103.399749'], ['19.41231', '-99.17339'], ['25.72613', '-100.21448'], ['20.66601', '-103.40615'], ['19.55919', '-99.29715'], ['20.69926', '-103.38573']]
-s_all = s_CN + s_MY + s_JP + s_KR + s_MX
+# s_CN = [['31.260673', '121.499428'], ['31.229257', '121.524293'], ['30.243706', '120.164931'], ['38.91687', '121.635837'], ['39.049373', '121.779125'], ['39.117714', '117.218177']]
+# s_MY = [['3.814387', '103.327294'], ['3.117951', '101.635792'], ['1.472285', '103.782901'], ['3.202535', '101.733844'], ['3.153336', '101.707138'], ['4.331214', '113.985114']]
+# s_JP = [['35.881087', '139.827807'], ['33.32841', '130.311539'], ['43.068145', '141.349646'], ['34.661902', '135.081374'], ['35.007649', '135.759842'], ['34.749957', '137.840909']]
+# s_KR = [['37.39228', '126.95652'], ['35.835315', '128.579907'], ['35.22447', '128.68395'], ['37.48448', '126.8945'], ['35.15968', '129.15951'], ['37.517172', '126.903269']]
+# s_MX = [['20.679404', '-103.399749'], ['19.41231', '-99.17339'], ['25.72613', '-100.21448'], ['20.66601', '-103.40615'], ['19.55919', '-99.29715'], ['20.69926', '-103.38573']]
+# s_all = s_CN + s_MY + s_JP + s_KR + s_MX
 arr_all = [s_CN, s_MY,s_JP,s_KR,s_MX]
-d_cn =[]
-d_my =[]
-d_jp =[]
-d_kr =[]
-d_mx =[]
-global dist_arr 
-dist_arr = [0,0,0,0,0] 
-j=0
-Y=[[]]
-X= np.array([[0],[0],[0],[0],[0]])
-#print(s_all)
+country_name = ["CN","MY","JP","KR","MX"]
 
 # m = folium.Map(location=[31.2304, 121.4737], zoom_start=12)
 #Map_Mark(s_all)
+# m = folium.Map(location=[0,0], zoom_start=5)
+# for i in range(len(s_all)):
+
+
+#     tooltip = "Click Here For More Info"
+#     marker = folium.Marker(
+#             location=s_all[i],
+#             icon=folium.Icon(icon="cloud"),
+#             popup=i,
+#             tooltip=tooltip)
+#     marker.add_to(m)
+
+# for i in (arr_all):   
+#     list_of_distances = np.array([int(geodesic(a, b).km) for a, b in product(i, repeat = 2)])
+#     distance_matrix = list_of_distances.reshape(int(list_of_distances.size**0.5), int(list_of_distances.size**0.5))
+#     j=j+1
+#     if j == 1:
+#         d_cn = distance_matrix
+#         dist_arr[j-1] = d_cn
+#     if j == 2:
+#         d_my= distance_matrix
+#         dist_arr[j-1] = d_my
+#     if j == 3:
+#         d_jp= distance_matrix
+#         dist_arr[j-1] = d_jp
+#     if j == 4:
+#         d_kr= distance_matrix
+#         dist_arr[j-1] = d_kr
+#     if j == 5:
+#         d_mx= distance_matrix
+#         dist_arr[j-1] = d_mx
+
+
+# s_country=[[float(y) for y in x] for x in ]
 m = folium.Map(location=[0,0], zoom_start=5)
-for i in range(len(s_all)):
+o = 0
+for i in (arr_all):
+    s_country=[[float(y) for y in x] for x in i]
+    k=0
+    for j in i:
+        tooltip = "Click Here For More Info"
+        marker = folium.Marker(
+                location=j,
+                icon=folium.Icon(icon="cloud"),
+                popup="{}.{}".format(k,country_name[o]),
+                tooltip=tooltip)
+        marker.add_to(m)
+        k=k+1
+    o=o+1
+    data = create_data_model(i)
+    manager = pywrapcp.RoutingIndexManager(len(data['distance_matrix']),data['num_vehicles'], data['depot'] )
+    routing = pywrapcp.RoutingModel(manager)
+    transit_callback_index = routing.RegisterTransitCallback(distance_callback)
+    routing.SetArcCostEvaluatorOfAllVehicles(transit_callback_index)
+    search_parameters = pywrapcp.DefaultRoutingSearchParameters()
+    search_parameters = pywrapcp.DefaultRoutingSearchParameters()
+    search_parameters.first_solution_strategy = (routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC)
+    solution = routing.SolveWithParameters(search_parameters)
+    if solution:
+        print_solution(manager, routing, solution)
+    route = get_route(solution, routing, manager)
+    print(route)
+    for index in range(1, len(route)):
+        folium.PolyLine(locations=[s_country[route[index]], s_country[route[index-1]]]).add_to(m)
 
 
-    tooltip = "Click Here For More Info"
-    marker = folium.Marker(
-            location=s_all[i],
-            icon=folium.Icon(icon="cloud"),
-            popup="<stong>starbuck</stong>",
-            tooltip=tooltip)
-    marker.add_to(m)
-
-for i in (arr_all):   
-    list_of_distances = np.array([int(geodesic(a, b).km) for a, b in product(i, repeat = 2)])
-    distance_matrix = list_of_distances.reshape(int(list_of_distances.size**0.5), int(list_of_distances.size**0.5))
-    j=j+1
-    if j == 1:
-        d_cn = distance_matrix
-        dist_arr[j-1] = d_cn
-    if j == 2:
-        d_my= distance_matrix
-        dist_arr[j-1] = d_my
-    if j == 3:
-        d_jp= distance_matrix
-        dist_arr[j-1] = d_jp
-    if j == 4:
-        d_kr= distance_matrix
-        dist_arr[j-1] = d_kr
-    if j == 5:
-        d_mx= distance_matrix
-        dist_arr[j-1] = d_mx
-
- 
-data = create_data_model(dist_arr[0])
-manager = pywrapcp.RoutingIndexManager(len(data['distance_matrix']),data['num_vehicles'], data['depot'] )
-routing = pywrapcp.RoutingModel(manager)
-transit_callback_index = routing.RegisterTransitCallback(distance_callback)
-routing.SetArcCostEvaluatorOfAllVehicles(transit_callback_index)
-search_parameters = pywrapcp.DefaultRoutingSearchParameters()
-search_parameters = pywrapcp.DefaultRoutingSearchParameters()
-search_parameters.first_solution_strategy = (routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC)
-solution = routing.SolveWithParameters(search_parameters)
-if solution:
-    print_solution(manager, routing, solution)
-    X[0]= solution.ObjectiveValue()
-route = get_route(solution, routing, manager)
-m.save('p22.html')
+m.save('p23.html')
 
 
 
